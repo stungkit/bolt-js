@@ -1,7 +1,5 @@
-/* eslint-disable no-console */
-/* eslint-disable import/no-internal-modules */
 import './utils/env';
-import { App, LogLevel } from '@slack/bolt';
+import { App, type BlockButtonAction, LogLevel } from '@slack/bolt';
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -41,9 +39,10 @@ app.message('hello', async ({ message, say }) => {
   }
 });
 
-app.action('button_click', async ({ body, ack, say }) => {
+app.action<BlockButtonAction>('button_click', async ({ body, ack, say }) => {
   // Acknowledge the action
   await ack();
+  // we know that this event comes from a button click from a message in a channel, so `say` will be available.
   await say(`<@${body.user.id}> clicked the button`);
 });
 

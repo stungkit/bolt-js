@@ -1,11 +1,11 @@
 const { App, ExpressReceiver, LogLevel, FileInstallationStore } = require('@slack/bolt');
 
 // Create an ExpressReceiver
-const receiver = new ExpressReceiver({ 
+const receiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
   clientId: process.env.SLACK_CLIENT_ID,
   clientSecret: process.env.SLACK_CLIENT_SECRET,
-  stateSecret: 'my-secret',
+  stateSecret: process.env.SLACK_STATE_SECRET,
   scopes: ['chat:write'],
   installerOptions: {
     // If below is true, /slack/install redirects installers to the Slack authorize URL
@@ -36,5 +36,5 @@ receiver.router.get('/secret-page', (req, res) => {
 
 (async () => {
   await app.start(3000);
-  console.log('Express app is running');
+  app.logger.info('Express app is running');
 })();

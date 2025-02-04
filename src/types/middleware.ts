@@ -1,12 +1,12 @@
-import { WebClient } from '@slack/web-api';
-import { Logger } from '@slack/logger';
-import { StringIndexed } from './helpers';
-import { SlackEventMiddlewareArgs } from './events';
-import { SlackActionMiddlewareArgs } from './actions';
-import { SlackCommandMiddlewareArgs } from './command';
-import { SlackOptionsMiddlewareArgs } from './options';
-import { SlackShortcutMiddlewareArgs } from './shortcuts';
-import { SlackViewMiddlewareArgs } from './view';
+import type { Logger } from '@slack/logger';
+import type { WebClient } from '@slack/web-api';
+import type { SlackActionMiddlewareArgs } from './actions';
+import type { SlackCommandMiddlewareArgs } from './command';
+import type { FunctionInputs, SlackEventMiddlewareArgs } from './events';
+import type { SlackOptionsMiddlewareArgs } from './options';
+import type { SlackShortcutMiddlewareArgs } from './shortcuts';
+import type { StringIndexed } from './utilities';
+import type { SlackViewMiddlewareArgs } from './view';
 
 // TODO: rename this to AnyListenerArgs, and all the constituent types
 export type AnyMiddlewareArgs =
@@ -26,9 +26,9 @@ export interface AllMiddlewareArgs<CustomContext = StringIndexed> {
 
 // NOTE: Args should extend AnyMiddlewareArgs, but because of contravariance for function types, including that as a
 // constraint would mess up the interface of App#event(), App#message(), etc.
-export interface Middleware<Args, CustomContext = StringIndexed> {
-  (args: Args & AllMiddlewareArgs<CustomContext>): Promise<void>;
-}
+export type Middleware<Args, CustomContext = StringIndexed> = (
+  args: Args & AllMiddlewareArgs<CustomContext>,
+) => Promise<void>;
 
 /**
  * Context object, which provides contextual information associated with an incoming requests.
@@ -71,7 +71,24 @@ export interface Context extends StringIndexed {
   /**
    * Is the app installed at an Enterprise level?
    */
-  isEnterpriseInstall: boolean,
+  isEnterpriseInstall: boolean;
+
+  /**
+   * A JIT and function-specific token that, when used to make API calls,
+   * creates an association between a function's execution and subsequent actions
+   * (e.g., buttons and other interactivity)
+   */
+  functionBotAccessToken?: string;
+
+  /**
+   * Function execution ID associated with the event
+   */
+  functionExecutionId?: string;
+
+  /**
+   * Inputs that were provided to a function when it was executed
+   */
+  functionInputs?: FunctionInputs;
 
   /**
    * Retry count of an Events API request (this property does not exist for other requests)
@@ -90,6 +107,9 @@ export const contextBuiltinKeys: string[] = [
   'botUserId',
   'teamId',
   'enterpriseId',
+  'functionBotAccessToken',
+  'functionExecutionId',
+  'functionInputs',
   'retryNum',
   'retryReason',
 ];

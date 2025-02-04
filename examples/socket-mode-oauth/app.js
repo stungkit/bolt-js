@@ -7,7 +7,7 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
   clientId: process.env.SLACK_CLIENT_ID,
   clientSecret: process.env.SLACK_CLIENT_SECRET,
-  stateSecret: 'my-state-secret',
+  stateSecret: process.env.SLACK_STATE_SECRET,
   scopes: ['channels:history', 'chat:write', 'commands'],
 });
 
@@ -15,9 +15,9 @@ const app = new App({
 (async () => {
   try {
     await app.start(process.env.PORT);
-    console.log('⚡️ Bolt app is running! ⚡️');
+    app.logger.info('⚡️ Bolt app is running! ⚡️');
   } catch (error) {
-    console.error('Unable to start App', error);
+    app.logger.error('Unable to start App', error);
     process.exit(1);
   }
 })();

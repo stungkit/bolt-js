@@ -4,52 +4,51 @@ const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   appToken: process.env.SLACK_APP_TOKEN,
   socketMode: true,
-  logLevel: LogLevel.DEBUG
+  logLevel: LogLevel.DEBUG,
 });
 
 (async () => {
   await app.start();
-  console.log('⚡️ Bolt app started');
+  app.logger.info('⚡️ Bolt app started');
 })();
-
 
 // Listen to slash command
 // Post a message with Message Metadata
-app.command('/post', async ({ ack, command, say }) => {
+app.command('/post', async ({ ack, say }) => {
   await ack();
   await say({
-    text: "Message Metadata Posting",
+    text: 'Message Metadata Posting',
     metadata: {
-      "event_type": "my_event",
-      "event_payload": {
-        "key": "value"
-      }
-    }
+      event_type: 'my_event',
+      event_payload: {
+        key: 'value',
+      },
+    },
   });
 });
 
 app.event('message_metadata_posted', async ({ event, say }) => {
   const { message_ts: thread_ts } = event;
   await say({
-    text: "Message Metadata Posted",
+    text: 'Message Metadata Posted',
     blocks: [
       {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": "Message Metadata Posted"
-        }
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: 'Message Metadata Posted',
+        },
       },
       {
-        "type": "context",
-        "elements": [
+        type: 'context',
+        elements: [
           {
-            "type": "mrkdwn",
-            "text": `${JSON.stringify(event.metadata)}`
-          }
-        ]
-      }
+            type: 'mrkdwn',
+            text: `${JSON.stringify(event.metadata)}`,
+          },
+        ],
+      },
     ],
-    thread_ts
-  })
+    thread_ts,
+  });
 });

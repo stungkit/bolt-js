@@ -1,9 +1,3 @@
-import pleaseUpgradeNode from 'please-upgrade-node';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const packageJson = require('../package.json'); // eslint-disable-line @typescript-eslint/no-var-requires, import/no-commonjs
-
-pleaseUpgradeNode(packageJson);
-
 export {
   default as App,
   AppOptions,
@@ -27,16 +21,16 @@ export { default as AwsLambdaReceiver, AwsLambdaReceiverOptions } from './receiv
 
 export { BufferedIncomingMessage } from './receivers/BufferedIncomingMessage';
 export {
-  HTTPModuleFunctions,
   RequestVerificationOptions,
   ReceiverDispatchErrorHandlerArgs,
   ReceiverProcessEventErrorHandlerArgs,
   ReceiverUnhandledRequestHandlerArgs,
 } from './receivers/HTTPModuleFunctions';
+export * as HTTPModuleFunctions from './receivers/HTTPModuleFunctions';
 export { HTTPResponseAck } from './receivers/HTTPResponseAck';
 
 export {
-  SocketModeFunctions,
+  defaultProcessEventErrorHandler,
   SocketModeReceiverProcessEventErrorHandlerArgs,
 } from './receivers/SocketModeFunctions';
 
@@ -51,6 +45,14 @@ export {
   ReceiverRoutes,
   buildReceiverRoutes,
 } from './receivers/custom-routes';
+
+export {
+  Assistant,
+  AssistantConfig,
+  AssistantThreadContextChangedMiddleware,
+  AssistantThreadStartedMiddleware,
+  AssistantUserMessageMiddleware,
+} from './Assistant';
 
 export {
   WorkflowStep,
@@ -71,4 +73,5 @@ export {
   InstallProviderOptions,
 } from '@slack/oauth';
 
-export * from '@slack/types';
+export * as types from '@slack/types';
+export * as webApi from '@slack/web-api';
